@@ -1,0 +1,42 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "oh-my-opencode@latest"
+  ],
+  "provider": {
+    "mingni": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "mingni",
+      "options": {
+      
+        "baseURL": "https://max.openai365.top/v1",
+        "apiKey": "sk-tLLJLFXPyLSpA6txQEoIDw4R0yjoVQSYmeXwfkLPmP9HL3IJ"
+      },
+      "models": {
+        "gemini-pro": {
+          "id": "gemini-3-pro-preview-thinking", 
+          "name": "Gemini 3"
+        },
+        "gemini-flash": {
+          "id": "cluade-opus-4.5", // 请替换为实际的模型 ID
+          "name": "cluade"
+        }
+      }
+    },
+    "atomgit": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "mingni",
+      "options": {
+      
+        "baseURL": "https://api-ai.gitcode.com/v1",
+        "apiKey": "eH3gmn1QxyuBxxdhH7HHM6mz"
+      },
+      "models": {
+        "zai-org/GLM-5": {
+          "id": "zai-org/GLM-5", 
+          "name": "zai-org/GLM-5"
+        }
+      }
+    }
+  }
+}
