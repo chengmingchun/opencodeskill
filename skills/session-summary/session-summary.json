@@ -1,0 +1,38 @@
+{
+  "name": "session-summary",
+  "description": "渐进式交互的会话总结技能。通过3步确认流程生成技术干货文档，自动创建会话专用文件夹，支持Markdown和HTML输出。不自动触发，完全由用户控制。副标题使用醒目颜色。",
+  "version": "3.1.0",
+  "category": "writing",
+  "author": "Sisyphus",
+  "interaction_mode": "progressive",
+  "progressive_steps": [
+    {"step": 1, "question": "是否总结当前会话？", "options": ["是", "否"], "default": "是"},
+    {"step": 2, "question": "选择输出格式：", "options": ["Markdown", "HTML", "两者都生成"], "default": "两者都生成"},
+    {"step": 3, "question": "选择输出路径和文件夹：", "options": ["默认路径并创建文件夹 (g:/blog/)", "当前目录不创建文件夹", "自定义路径并创建文件夹"], "default": "默认路径并创建文件夹 (g:/blog/)"}
+  ],
+  "triggers": [
+    "session-summary",
+    "总结会话",
+    "生成会话总结",
+    "创建会话文档"
+  ],
+  "features": {
+    "markdown": {
+      "template": "templates/session-summary-md.md",
+      "description": "生成技术干货满满的Markdown文档"
+    },
+    "html": {
+      "template": "templates/session-summary-modern.html",
+      "description": "生成前卫灵动的HTML文档，支持多文件交互",
+      "multiFileSupport": true
+    }
+  },
+  "session_management": {
+    "auto_folder": true,
+    "folder_format": "session_%Y%m%d_%H%M%S",
+    "default_path": "g:/blog/"
+  },
+  "prompts": {
+    "generate": "你是一个技术文档大师，擅长将技术会话转化为有趣、有价值的文档。请根据提供的会话内容，生成：\n\n## 输出路径配置\n支持三种输出路径：\n1. **默认路径**：输出到 `g:/blog` 文件夹（优先使用）\n2. **当前路径**：输出到OpenCode当前工作目录（workdir环境变量）\n3. **自定义路径**：用户指定的其他路径\n\n用户未指定时，默认输出到 `g:/blog`。\n\n## 输出要求\n\n### 1. Markdown文档 (session-summary.md)\n- 标题：有趣且吸引人\n- 内容要有\"干货\"：提取关键技术点、代码技巧、解决方案\n- 使用代码块展示重要代码片段\n- 保持技术深度，同时让内容生动有趣\n- 包含：\n  - 会话概述\n  - 核心技术点（使用代码块）\n  - 解决的问题\n  - 代码技巧总结\n  - 最佳实践建议\n\n### 2. HTML文档 (session-summary.html)\n要求：\n- **前卫灵动的浅色主题**，使用紫色(#7c3aed)和粉色(#f472b6)为主色调\n- 字体大小适中（基础17px），使用Inter、Noto Sans SC、JetBrains Mono字体\n- 代码块使用深色背景(#1a1a1a)，语法高亮配色协调\n- 交互性强：\n  - 代码块支持一键复制\n  - 折叠/展开长内容\n  - 平滑滚动导航\n  - 搜索功能\n  - 滚动进度条\n  - 响应式目录导航\n- 响应式设计，支持移动端\n- 易于扩展：支持通过简单的HTML注释或配置来添加多个md文件内容\n- 清晰的代码区域样式\n- 目录导航\n\n## 输入\n提供要总结的会话内容（可以是session_id或原始消息），以及用户选择的输出路径。\n\n## 注意事项\n- 代码技巧要用实际代码展示，不要只描述\n- HTML要包含内联CSS和JS，便于单文件使用\n- 确保HTML的multiFileSupport为true，方便未来扩展\n- 根据用户选择的路径保存文件（默认g:/blog/当前路径/自定义路径）"
+  }
+}

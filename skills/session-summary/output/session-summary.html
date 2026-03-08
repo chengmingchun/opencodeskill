@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCode自定义Skill开发实战 - Session Summary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-light: #3385ff;
+            --primary-lighter: #e6f0ff;
+            --secondary: #64748b;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-base: #ffffff;
+            --bg-primary: #fafbfc;
+            --bg-secondary: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --border-light: #f3f4f6;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius-sm: 4px;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --font-sans: 'Inter', 'Noto Sans SC', -apple-system, system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.75;
+            min-height: 100vh;
+            font-size: 17px;
+        }
+
+        /* 导航 */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.875rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-brand svg { color: var(--primary); }
+
+        .nav-search {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.5rem 1rem;
+            width: 300px;
+        }
+
+        .nav-search:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-lighter);
+        }
+
+        .nav-search input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            flex: 1;
+            font-size: 0.9375rem;
+        }
+
+        .nav-search svg { width: 16px; height: 16px; color: var(--text-muted); }
+
+        /* 布局 */
+        .layout { display: flex; max-width: 1400px; margin: 0 auto; }
+
+        .sidebar {
+            width: 240px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+            position: sticky;
+            top: 57px;
+            height: calc(100vh - 57px);
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .toc-list { list-style: none; }
+
+        .toc-item { margin-bottom: 0.25rem; }
+
+        .toc-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9375rem;
+            border-radius: var(--radius-sm);
+            transition: all 0.15s;
+            border-left: 2px solid transparent;
+        }
+
+        .toc-link:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .toc-link.active {
+            background: var(--primary-lighter);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 500;
+        }
+
+        .toc-link.level-3 { padding-left: 1.5rem; font-size: 0.875rem; }
+
+        /* 主内容 */
+        .main-content {
+            flex: 1;
+            padding: 2rem 3rem;
+            max-width: 900px;
+        }
+
+        /* 标题 */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 1.625rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 1.75rem 0 0.75rem;
+        }
+
+        h4 {
+            font-size: 1.0625rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 1.25rem 0 0.5rem;
+        }
+
+        p { margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem; }
+
+        /* 代码块 */
+        .code-block {
+            margin: 1.5rem 0;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid #333;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.625rem 1rem;
+            background: #2d2d2d;
+            border-bottom: 1px solid #404040;
+        }
+
+        .code-lang {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .code-copy {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: transparent;
+            border: 1px solid #555;
+            border-radius: var(--radius-sm);
+            color: #aaa;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .code-copy:hover {
+            background: #404040;
+            border-color: #777;
+            color: #fff;
+        }
+
+        .code-copy.copied {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .code-copy svg { width: 14px; height: 14px; }
+
+        .code-content {
+            padding: 1.25rem;
+            overflow-x: auto;
+            background: #1a1a1a;
+        }
+
+        .code-content pre {
+            margin: 0;
+            font-family: var(--font-mono);
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            color: #d4d4d4;
+        }
+
+        .code-content .keyword { color: #c792ea; }
+        .code-content .string { color: #c3e88d; }
+        .code-content .number { color: #f78c6c; }
+        .code-content .comment { color: #676e95; font-style: italic; }
+        .code-content .function { color: #82aaff; }
+        .code-content .variable { color: #f78c6c; }
+        .code-content .property { color: #80cbc4; }
+        .code-content .operator { color: #89ddff; }
+
+        code:not([class*="language-"]) {
+            background: var(--bg-secondary);
+            color: var(--primary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.875em;
+            font-family: var(--font-mono);
+        }
+
+        /* 表格 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            font-size: 0.9375rem;
+        }
+
+        th, td {
+            padding: 0.875rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        td { color: var(--text-secondary); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--bg-secondary); }
+
+        /* 折叠面板 */
+        .collapsible {
+            margin: 1.25rem 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--bg-card);
+        }
+
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: background 0.15s;
+            user-select: none;
+        }
+
+        .collapsible-header:hover { background: var(--bg-secondary); }
+        .collapsible-header h4 { margin: 0; font-size: 1rem; }
+
+        .collapsible-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+
+        .collapsible.active .collapsible-icon { transform: rotate(180deg); }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible.active .collapsible-content { max-height: 1000px; }
+
+        .collapsible-inner {
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border);
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .card-title {
+            font-size: 1.0625rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* 标签 */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            background: var(--primary-lighter);
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--primary);
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag.warning { background: #fef3c7; color: #d97706; }
+        .tag.success { background: #d1fae5; color: #059669; }
+
+        /* 引用 */
+        blockquote {
+            margin: 1.5rem 0;
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        blockquote p:last-child { margin-bottom: 0; }
+
+        ul, ol { margin: 1rem 0; padding-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; color: var(--text-secondary); }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: var(--border);
+            margin: 2.5rem 0;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 57px;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--primary);
+            z-index: 101;
+        }
+
+        .file-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+
+        .file-tab {
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            cursor: pointer;
+        }
+
+        .file-tab:hover { border-color: var(--primary-light); color: var(--primary); }
+        .file-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
+
+        .highlight { background: #fef08a; padding: 0.125rem 0.25rem; }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { padding: 1.5rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.375rem; }
+            .nav-search { display: none; }
+        }
+
+        @media print {
+            .navbar, .sidebar, .progress-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            Session Summary
+        </div>
+        <div class="nav-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="searchInput" placeholder="搜索内容...">
+        </div>
+    </nav>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-title">目录</div>
+            <ul class="toc-list" id="tocList"></ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="file-tabs"><button class="file-tab active">session-summary.md</button></div>
+            <article id="contentArea">
+                <h1>OpenCode自定义Skill开发实战</h1>
+                <p style="font-size: 1.125rem; color: var(--text-secondary);">从零构建会话总结神器</p>
+                <hr>
+                <h2>会话概述</h2>
+                <p>本次会话完成了一个有意义的开发任务：在OpenCode中创建一个自定义skill，用于自动将OpenCode会话内容转化为精美的Markdown和HTML文档。</p>
+                <p><span class="tag">核心成果</span> 成功在 <code>C:\Users\Administrator\.config\opencode\session-summary\</code> 目录下创建了完整的skill体系。</p>
+                <h2>核心目标</h2>
+                <ul>
+                    <li>创建自定义OpenCode skill</li>
+                    <li>生成技术干货满满的Markdown文档</li>
+                    <li>构建简洁清新的HTML文档</li>
+                    <li>支持多文件扩展</li>
+                    <li>支持三种输出路径选择</li>
+                </ul>
+                <hr>
+                <h2>核心技术点</h2>
+                <h3>1. Skill配置结构</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">json</span>
+                        <button class="code-copy" onclick="copyCode(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            复制
+                        </button>
+                    </div>
+                    <div class="code-content"><pre><code>{
+  <span class="property">"name"</span>: <span class="string">"session-summary"</span>,
+  <span class="property">"description"</span>: <span class="string">"将OpenCode会话内容总结为Markdown和HTML文档"</span>,
+  <span class="property">"category"</span>: <span class="string">"writing"</span>,
+  <span class="property">"version"</span>: <span class="string">"1.0.0"</span>,
+  <span class="property">"features"</span>: {
+    <span class="property">"markdown"</span>: { <span class="property">"template"</span>: <span class="string">"session-summary-md.md"</span> },
+    <span class="property">"html"</span>: { <span class="property">"template"</span>: <span class="string">"session-summary-html.html"</span>, <span class="property">"multiFileSupport"</span>: <span class="keyword">true</span> }
+  }
+}</code></pre></div>
+                </div>
+                <p><span class="tag success">技巧</span> Skill的<code>category</code>字段决定使用哪个优化模型。</p>
+                <h3>2. 输出路径配置</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">json</span>
+                        <button class="code-copy" onclick="copyCode(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            复制
+                        </button>
+                    </div>
+                    <div class="code-content"><pre><code><span class="comment">// 三种输出路径</span>
+<span class="number">1.</span> 当前路径（默认）：workdir环境变量
+<span class="number">2.</span> 集中化路径：session-summary/output
+<span class="number">3.</span> 自定义路径：用户指定的其他路径</code></pre></div>
+                </div>
+                <h3>3. HTML浅色主题设计</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">css</span>
+                        <button class="code-copy" onclick="copyCode(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            复制
+                        </button>
+                    </div>
+                    <div class="code-content"><pre><code><span class="property">:root</span> {
+    <span class="property">--primary</span>: <span class="string">#0066ff</span>;
+    <span class="property">--bg-base</span>: <span class="string">#ffffff</span>;
+    <span class="property">--bg-primary</span>: <span class="string">#fafbfc</span>;
+    <span class="property">--text-primary</span>: <span class="string">#111827</span>;
+    <span class="property">--text-secondary</span>: <span class="string">#4b5563</span>;
+}</code></pre></div>
+                </div>
+                <hr>
+                <h2>解决方案</h2>
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapse(this.parentElement)">
+                        <h4>问题1：Skill需要模板文件</h4>
+                        <svg class="collapsible-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div class="collapsible-content"><div class="collapsible-inner"><p><strong>方案</strong>：在skill目录下创建<code>templates/</code>子目录，存放模板文件</p></div></div>
+                </div>
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapse(this.parentElement)">
+                        <h4>问题2：输出路径需要用户选择</h4>
+                        <svg class="collapsible-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div class="collapsible-content"><div class="collapsible-inner"><p><strong>方案</strong>：在prompt中定义三种输出路径选项，由用户选择或默认当前路径</p></div></div>
+                </div>
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapse(this.parentElement)">
+                        <h4>问题3：HTML需要简洁清新的浅色风格</h4>
+                        <svg class="collapsible-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div class="collapsible-content"><div class="collapsible-inner"><p><strong>方案</strong>：使用Inter字体、浅蓝色调、简洁圆角、清晰的层次结构</p></div></div>
+                </div>
+                <hr>
+                <h2>代码技巧总结</h2>
+                <table>
+                    <thead><tr><th>技巧</th><th>说明</th><th>适用场景</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>CSS变量</code></td><td>用<code>--var</code>定义颜色主题</td><td>多主题切换</td></tr>
+                        <tr><td><code>TreeWalker</code></td><td>高效遍历DOM文本节点</td><td>页面搜索</td></tr>
+                        <tr><td><code>单文件内联</code></td><td>CSS/JS全部内联</td><td>便携分享</td></tr>
+                        <tr><td><code>配置驱动</code></td><td>JSON配置管理多模块</td><td>动态内容</td></tr>
+                        <tr><td><code>backdrop-filter</code></td><td>毛玻璃效果</td><td>导航栏</td></tr>
+                    </tbody>
+                </table>
+                <hr>
+                <h2>最佳实践</h2>
+                <div class="card"><div class="card-title">Skill开发流程</div><p>需求分析 → 配置设计 → 模板创建 → 功能验证 → 文档编写</p></div>
+                <h3>输出路径选择</h3>
+                <ul>
+                    <li><strong>当前路径</strong>：适合单次使用，文件保存在工作目录</li>
+                    <li><strong>集中化路径</strong>：适合统一管理，集中在session-summary/output目录</li>
+                    <li><strong>自定义路径</strong>：适合特殊需求，用户指定路径</li>
+                </ul>
+                <hr>
+                <blockquote><p><strong>总结</strong>：本次会话展示了如何从零构建一个完整的OpenCode自定义skill，包括配置文件编写、模板设计、浅色UI实现，以及多输出路径方案。</p></blockquote>
+                <hr>
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.875rem;">Generated by OpenCode Session Summary Skill</p>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const contentArea = document.getElementById('contentArea');
+        const tocList = document.getElementById('tocList');
+        const searchInput = document.getElementById('searchInput');
+        const progressBar = document.getElementById('progressBar');
+
+        function init() { generateTOC(); setupEventListeners(); setupScrollProgress(); }
+
+        function generateTOC() {
+            const headings = contentArea.querySelectorAll('h2, h3');
+            let toc = '';
+            headings.forEach(h => {
+                const id = h.textContent;
+                h.id = id;
+                const level = h.tagName === 'H2' ? 'level-2' : 'level-3';
+                toc += `<li class="toc-item"><a href="#${id}" class="toc-link ${level}">${id}</a></li>`;
+            });
+            tocList.innerHTML = toc || '<li class="toc-item"><span style="color: var(--text-muted); font-size: 0.875rem;">暂无目录</span></li>';
+            tocList.querySelectorAll('.toc-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').slice(1);
+                    document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        }
+
+        function copyCode(btn) {
+            const code = btn.closest('.code-block').querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.classList.add('copied');
+                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 复制';
+                }, 2000);
+            });
+        }
+
+        function toggleCollapse(el) { el.classList.toggle('active'); }
+
+        function setupSearch() {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                if (!query) {
+                    document.querySelectorAll('.highlight').forEach(el => { el.outerHTML = el.textContent; });
+                    return;
+                }
+                const walker = document.createTreeWalker(contentArea, NodeFilter.SHOW_TEXT);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                nodes.forEach(node => {
+                    const text = node.textContent.toLowerCase();
+                    if (text.includes(query) && node.parentElement) {
+                        const span = document.createElement('span');
+                        span.innerHTML = node.textContent.replace(new RegExp(`(${query})`, 'gi'), '<span class="highlight">$1</span>');
+                        node.parentElement.replaceChild(span, node);
+                    }
+                });
+            });
+        }
+
+        function setupScrollProgress() {
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                progressBar.style.width = (winScroll / height) * 100 + '%';
+            });
+        }
+
+        function setupEventListeners() {
+            setupSearch();
+            window.addEventListener('scroll', () => {
+                const headings = contentArea.querySelectorAll('h2, h3');
+                let current = '';
+                headings.forEach(h => { if (h.getBoundingClientRect().top <= 100) current = h.id; });
+                tocList.querySelectorAll('.toc-link').forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

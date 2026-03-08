@@ -1,0 +1,29 @@
+{
+  "last_used": "2026-03-08T14:49:01",
+  "preferences": {
+    "output_format": "两者都生成",
+    "output_path": "默认路径并创建文件夹 (g:/blog/)",
+    "default_path": "g:/blog/"
+  },
+  "history": [
+    {
+      "timestamp": "2026-03-08T14:49:01",
+      "session_id": "session_20260308_144901",
+      "choices": {
+        "step1": "是",
+        "step2": "两者都生成",
+        "step3": "默认路径并创建文件夹 (g:/blog/)"
+      },
+      "output": {
+        "folder": "g:/blog/session_20260308_144901/",
+        "files": ["session-summary.md", "session-summary.html"]
+      }
+    }
+  ],
+  "stats": {
+    "total_sessions": 1,
+    "markdown_generated": 1,
+    "html_generated": 1,
+    "folders_created": 1
+  }
+}

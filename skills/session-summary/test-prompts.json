@@ -1,0 +1,177 @@
+{
+  "name": "session-summary",
+  "description": "Test prompts for evaluating session-summary skill",
+  "version": "1.0.0",
+  "prompts": [
+    {
+      "id": "test-001",
+      "name": "Basic session summary",
+      "prompt": "session-summary",
+      "context": {
+        "workdir": "/tmp/test-basic",
+        "session_id": "ses_test123"
+      },
+      "expected": {
+        "behavior": "Generate session summary files in default path (g:/blog) with modern HTML and Markdown",
+        "outputs": [
+          "Markdown file (session-summary.md)",
+          "HTML file (session-summary.html)",
+          "Files saved to g:/blog directory"
+        ],
+        "quality": {
+          "markdown": "Contains technical content, code examples, and干货",
+          "html": "Modern design with purple/pink theme, interactive features",
+          "paths": "Uses default path g:/blog when no path specified"
+        }
+      }
+    },
+    {
+      "id": "test-002",
+      "name": "Custom path session summary",
+      "prompt": "session-summary --path /tmp/custom-output",
+      "context": {
+        "workdir": "/tmp/test-custom"
+      },
+      "expected": {
+        "behavior": "Generate session summary files in specified custom path",
+        "outputs": [
+          "Markdown file in /tmp/custom-output/session-summary.md",
+          "HTML file in /tmp/custom-output/session-summary.html"
+        ],
+        "quality": {
+          "paths": "Respects custom path parameter",
+          "files": "Creates directory if it doesn't exist"
+        }
+      }
+    },
+    {
+      "id": "test-003",
+      "name": "Current path session summary",
+      "prompt": "session-summary --current",
+      "context": {
+        "workdir": "/tmp/current-test"
+      },
+      "expected": {
+        "behavior": "Generate session summary files in current working directory",
+        "outputs": [
+          "Markdown file in /tmp/current-test/session-summary.md",
+          "HTML file in /tmp/current-test/session-summary.html"
+        ],
+        "quality": {
+          "paths": "Uses current workdir when --current flag specified",
+          "interaction": "HTML has working interactive features"
+        }
+      }
+    },
+    {
+      "id": "test-004",
+      "name": "Session summary with specific session",
+      "prompt": "session-summary --session-id ses_abc123 --path /tmp/specific-session",
+      "context": {
+        "workdir": "/tmp/test-specific"
+      },
+      "expected": {
+        "behavior": "Generate summary for specified session ID",
+        "outputs": [
+          "Files contain content from session ses_abc123",
+          "Technical analysis of session content"
+        ],
+        "quality": {
+          "content": "Extracts code techniques and干货 from session",
+          "structure": "Well-organized with clear sections"
+        }
+      }
+    },
+    {
+      "id": "test-005",
+      "name": "HTML interactive features test",
+      "prompt": "session-summary --path /tmp/html-test",
+      "context": {
+        "workdir": "/tmp/html-test",
+        "session_content": "Sample session with code examples:\n```python\ndef hello():\n    print('Hello World')\n```\nAnd some discussion about best practices."
+      },
+      "expected": {
+        "behavior": "Generate HTML with working interactive features",
+        "outputs": [
+          "HTML with copy code buttons",
+          "Collapsible sections",
+          "Search functionality",
+          "Table of contents",
+          "Scroll progress bar"
+        ],
+        "quality": {
+          "interactivity": "All interactive features work",
+          "design": "Modern purple/pink theme with good typography",
+          "responsiveness": "Works on mobile devices"
+        }
+      }
+    },
+    {
+      "id": "test-006",
+      "name": "Markdown content quality test",
+      "prompt": "session-summary --path /tmp/md-test",
+      "context": {
+        "workdir": "/tmp/md-test",
+        "session_content": "Technical discussion about Python decorators, async programming, and error handling."
+      },
+      "expected": {
+        "behavior": "Generate high-quality technical Markdown",
+        "outputs": [
+          "Interesting title",
+          "Session overview",
+          "Core technical points",
+          "Code examples",
+          "Solutions and best practices",
+          "Code技巧总结 table"
+        ],
+        "quality": {
+          "technical_depth": "Accurate technical content",
+          "readability": "Engaging and informative",
+          "structure": "Well-organized with clear hierarchy"
+        }
+      }
+    },
+    {
+      "id": "test-007",
+      "name": "Multi-file HTML support test",
+      "prompt": "session-summary --path /tmp/multi-test",
+      "context": {
+        "workdir": "/tmp/multi-test",
+        "multiple_sessions": true
+      },
+      "expected": {
+        "behavior": "HTML supports multiple file switching",
+        "outputs": [
+          "File tabs for switching between sessions",
+          "Multi-file configuration in HTML",
+          "Smooth transitions between files"
+        ],
+        "quality": {
+          "multiFileSupport": "HTML template supports loading multiple markdown files",
+          "usability": "Easy to navigate between files"
+        }
+      }
+    },
+    {
+      "id": "test-008",
+      "name": "Error handling test",
+      "prompt": "session-summary --path /nonexistent/path/with/permission/issue",
+      "context": {
+        "workdir": "/tmp/error-test"
+      },
+      "expected": {
+        "behavior": "Handle path errors gracefully",
+        "outputs": [
+          "Informative error message",
+          "Fallback to alternative path",
+          "Clear instructions for user"
+        ],
+        "quality": {
+          "robustness": "Handles errors without crashing",
+          "user_experience": "Helpful error messages",
+          "recovery": "Attempts alternative solutions"
+        }
+      }
+    }
+  ]
+}
